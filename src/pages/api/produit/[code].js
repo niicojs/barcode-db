@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import nextConnect from 'next-connect';
 import middleware from '../../../middlewares/database';
 import { find } from '../../../upcdb';
@@ -30,19 +31,20 @@ handler.get(async (req, res) => {
 });
 
 handler.post(async (req, res) => {
+  const session = await getSession({ req });
+  if (!session) return res.statusCode(401).send('unauthorized');
+
   const code = req.query.code;
   console.log(`Update Produit ${code}`);
   try {
-    const result = await req.db
-      .collection('barcode')
-      .update(
-        { code },
-        {
-          $set: { name: req.body.name },
-          $currentDate: { modifiedAt: true },
-        },
-        { upsert: true }
-      );
+    const result = await req.db.collection('barcode').update(
+      { code },
+      {
+        $set: { name: req.body.name },
+        $currentDate: { modifiedAt: true },
+      },
+      { upsert: true }
+    );
     console.log(result);
     res.json({ ok: true });
   } catch (e) {
