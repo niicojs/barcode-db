@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/client';
 import { List, Box, Link } from '@chakra-ui/react';
 import axios from 'axios';
+import validbarcode from 'barcode-validator';
 
 import Login from '../components/Login';
 import SearchInput from '../components/SearchInput';
@@ -13,11 +14,18 @@ const Home = () => {
   const [create, setCreate] = useState(null);
   const [session, loading] = useSession();
   const search = async (code) => {
-    console.log(`Searching ${code}`);
-    const response = await axios.get(`/api/produit/${code}`);
-    setFound(response.data);
-    if (!response.data?.length) {
-      setCreate(code);
+    if (!code || /^\s*$/.test(code)) return;
+    console.log(`Searching for ${code}`);
+    if (validbarcode(code)) {
+      const response = await axios.get(`/api/produit/${code}`);
+      setFound([response.data]);
+      if (!response.data) {
+        setCreate(code);
+      }
+    } else {
+      console.log('Not a valid barcode, search for name');
+      const response = await axios.get(`/api/search/${code}`);
+      setFound(response.data);
     }
   };
 

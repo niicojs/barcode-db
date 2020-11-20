@@ -38,6 +38,7 @@ const formatDate = (strdate) => {
 
 export default function Edit({ item }) {
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const { register, handleSubmit, errors } = useForm({
     defaultValues: {
       code: item.code,
@@ -49,7 +50,8 @@ export default function Edit({ item }) {
     const response = await axios.post(`/api/produit/${item.code}`, data);
     console.log(response.data);
     if (response.data.ok) {
-      window.location.replace('/');
+      setSuccess('OK');
+      setTimeout(() => setSuccess(''), 5000);
     } else {
       setError(response.data.error);
     }
@@ -83,10 +85,10 @@ export default function Edit({ item }) {
         </FormControl>
 
         <Box fontSize="small" color="gray.400">
-          Créé {formatDate(item.createdAt)}
+          Créé {formatDate(item.createdAt)} par {item.createdBy}
         </Box>
         <Box fontSize="small" color="gray.400">
-          Modifié {formatDate(item.modifiedAt)}
+          Modifié {formatDate(item.modifiedAt)} par {item.modifiedBy}
         </Box>
         <Button
           type="submit"
@@ -105,6 +107,12 @@ export default function Edit({ item }) {
           {error}
         </Alert>
       )}
+      {!success ? null : (
+        <Alert status="success">
+          <AlertIcon />
+          {success}
+        </Alert>
+      )}
     </Layout>
   );
 }
@@ -115,15 +123,13 @@ export async function getServerSideProps(context) {
     const base = process.env.NEXTAUTH_URL;
     const item = await axios
       .get(`${base}/api/produit/${code}`)
-      .then((res) => res.data[0]);
+      .then((res) => res.data);
     console.log(item);
     return {
       props: { item },
     };
   } catch (error) {
     console.error(error);
-    context.res.statusCode = 302;
-    context.res.setHeader('Location', `/`);
-    return { props: {} };
+    return { props: { error: true } };
   }
 }

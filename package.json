@@ -1,6 +1,6 @@
 {
   "name": "barcode-db",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.0.0",
     "@ericblade/quagga2": "^1.2.6",
     "axios": "^0.21.0",
+    "barcode-validator": "^1.0.2",
     "date-fns": "^2.16.1",
     "framer-motion": "^2.9.4",
     "mongodb": "^3.6.3",

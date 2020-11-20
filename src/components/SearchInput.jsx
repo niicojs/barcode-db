@@ -15,9 +15,8 @@ const SearchInput = ({ onSearch }) => {
     <InputGroup>
       <Input
         name="search"
-        placeholder="code barre"
+        placeholder="code barre ou text"
         value={input}
-        type="number"
         onChange={(evt) => setInput(evt.target.value)}
         onKeyUp={(evt) => {
           if (evt.key === 'Enter') search();
