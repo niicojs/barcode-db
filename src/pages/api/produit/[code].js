@@ -7,12 +7,14 @@ const handler = nextConnect();
 handler.use(middleware);
 
 handler.get(async (req, res) => {
+  const session = await getSession({ req });
+  const user = session?.user?.name || 'system';
+
   const code = req.query.code;
   console.log(`Get Produit ${code}`);
   const results = await req.db
     .collection('barcode')
     .find({ code }, { _id: 0 })
-    
     .toArray();
 
   if (results.length === 0) {
@@ -21,9 +23,9 @@ handler.get(async (req, res) => {
     const info = await find(code);
     if (info) {
       info.createdAt = new Date();
-      info.createdBy = 'system';
+      info.createdBy = user;
       info.modifiedAt = new Date();
-      info.modifiedBy = 'system';
+      info.modifiedBy = user;
       await req.barcodes.insertOne(info);
       results.push(info);
     }
@@ -60,7 +62,24 @@ handler.post(async (req, res) => {
       },
       { upsert: true }
     );
-    res.json({ ok: result.modifiedCount > 0 });
+    console.log(result);
+    const ok = result.upsertedCount > 0 || result.modifiedCount > 0;
+    res.json({ ok });
+  } catch (e) {
+    console.log(e);
+    res.json({ ok: false, error: e.message });
+  }
+});
+
+handler.delete(async (req, res) => {
+  const session = await getSession({ req });
+  if (!session) return res.statusCode(401).send('unauthorized');
+
+  try {
+    const code = req.query.code;
+    console.log(`Delete Produit ${code}`);
+    const result = await req.db.collection('barcode').deleteOne({ code });
+    res.json({ ok: result.deletedCount === 1 });
   } catch (e) {
     console.log(e);
     res.json({ ok: false, error: e.message });

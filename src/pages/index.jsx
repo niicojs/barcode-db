@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/client';
-import { List, Box, Link } from '@chakra-ui/react';
+import { List, Box, Link, Alert, AlertIcon } from '@chakra-ui/react';
 import axios from 'axios';
 import validbarcode from 'barcode-validator';
 
@@ -12,20 +12,36 @@ import Layout from '../components/Layout';
 const Home = () => {
   const [found, setFound] = useState([]);
   const [create, setCreate] = useState(null);
+  const [error, setError] = useState('');
   const [session, loading] = useSession();
+
   const search = async (code) => {
-    if (!code || /^\s*$/.test(code)) return;
+    if (!code || code.length < 3 || /^\s*$/.test(code)) return;
     console.log(`Searching for ${code}`);
+    setFound([]);
     if (validbarcode(code)) {
       const response = await axios.get(`/api/produit/${code}`);
-      setFound([response.data]);
-      if (!response.data) {
+      console.log(response);
+      if (!response.data?.code) {
         setCreate(code);
+      } else {
+        setFound([response.data]);
       }
     } else {
       console.log('Not a valid barcode, search for name');
       const response = await axios.get(`/api/search/${code}`);
+      console.log(response);
       setFound(response.data);
+    }
+  };
+
+  const deleteItem = async (item) => {
+    const response = await axios.delete(`/api/produit/${item.code}`);
+    if (response.data.ok) {
+      setFound(found.filter((i) => i.code !== item.code));
+    } else {
+      setError(response.data.error);
+      setTimeout(() => setError(''), 5000);
     }
   };
 
@@ -39,7 +55,11 @@ const Home = () => {
               <SearchInput onSearch={search} />
               <List mt="2rem" w="100%" spacing={3}>
                 {found?.map((item) => (
-                  <ProductListItem key={item.code} item={item} />
+                  <ProductListItem
+                    key={item.code}
+                    item={item}
+                    onDelete={deleteItem}
+                  />
                 ))}
               </List>
               {!create ? null : (
@@ -49,6 +69,12 @@ const Home = () => {
                     le créer ?
                   </Link>
                 </Box>
+              )}
+              {!error ? null : (
+                <Alert mt="2rem" status="error">
+                  <AlertIcon />
+                  {error}
+                </Alert>
               )}
             </>
           )}

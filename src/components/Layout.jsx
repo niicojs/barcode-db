@@ -14,7 +14,7 @@ export default function Layout({ title, children }) {
   return (
     <Box w="100%">
       <Head>
-        <title>Barcode DB</title>
+        <title>Barcode DB - {title}</title>
       </Head>
       <Box w="100%" bg="teal.400" h="0.5rem"></Box>
       <Flex w="100%" alignItems="center">

@@ -1,13 +1,17 @@
-import { ListItem, Flex, Spacer, Icon, IconButton, Link } from '@chakra-ui/react';
+import {
+  ListItem,
+  Flex,
+  Spacer,
+  Icon,
+  IconButton,
+  Link,
+} from '@chakra-ui/react';
 import { MdDeleteForever, MdModeEdit } from 'react-icons/md';
 
 const EditIcon = () => <Icon as={MdModeEdit} color="gray.300" />;
 const DeleteIcon = () => <Icon as={MdDeleteForever} color="gray.300" />;
 
-const ProductListItem = ({ item }) => {
-  const deleteItem = async () => {
-
-  }
+const ProductListItem = ({ item, onDelete }) => {
   return (
     <ListItem
       bg="gray.400"
@@ -33,7 +37,7 @@ const ProductListItem = ({ item }) => {
           icon={<DeleteIcon />}
           colorScheme="teal"
           variant="solid"
-          onClick={deleteItem}
+          onClick={() => onDelete(item)}
         />
       </Flex>
     </ListItem>
