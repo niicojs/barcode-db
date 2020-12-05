@@ -27,6 +27,7 @@ export default function Add() {
     defaultValues: {
       code: '',
       name: '',
+      chronoid: '',
     },
   });
 
@@ -58,7 +59,7 @@ export default function Add() {
             my="0.3rem"
           />
         </FormControl>
-        <FormControl isRequired>
+        <FormControl isRequired mt="1rem">
           <FormLabel>Nom</FormLabel>
           <Input
             name="name"
@@ -66,6 +67,16 @@ export default function Add() {
             required
             ref={register}
             isInvalid={!!errors.name}
+            my="0.3rem"
+          />
+        </FormControl>
+        <FormControl mt="1rem">
+          <FormLabel>ID Chronodrive</FormLabel>
+          <Input
+            name="chronoid"
+            placeholder="id"
+            ref={register}
+            isInvalid={!!errors.chronoid}
             my="0.3rem"
           />
         </FormControl>

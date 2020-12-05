@@ -25,6 +25,7 @@ import Layout from '../../components/Layout';
 
 const SaveIcon = () => <Icon as={MdSave} />;
 const formatDate = (strdate) => {
+  if (!strdate) return '?';
   const date = new Date(strdate);
   if (isBefore(date, subMonths(new Date(), 1))) {
     return 'le ' + format(date, 'dd/MM/yyyy');
@@ -43,6 +44,7 @@ export default function Edit({ item }) {
     defaultValues: {
       code: item.code,
       name: item.name,
+      chronoid: item.chronoid || '',
     },
   });
 
@@ -72,7 +74,7 @@ export default function Edit({ item }) {
             my="0.3rem"
           />
         </FormControl>
-        <FormControl isRequired>
+        <FormControl isRequired mt="1rem">
           <FormLabel>Nom</FormLabel>
           <Input
             name="name"
@@ -83,8 +85,17 @@ export default function Edit({ item }) {
             my="0.3rem"
           />
         </FormControl>
-
-        <Box fontSize="small" color="gray.400">
+        <FormControl mt="1rem">
+          <FormLabel>ID Chronodrive</FormLabel>
+          <Input
+            name="chronoid"
+            placeholder="id"
+            ref={register}
+            isInvalid={!!errors.chronoid}
+            my="0.3rem"
+          />
+        </FormControl>
+        <Box fontSize="small" color="gray.400" mt="1rem">
           Créé {formatDate(item.createdAt)} par {item.createdBy}
         </Box>
         <Box fontSize="small" color="gray.400">

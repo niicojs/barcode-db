@@ -52,6 +52,7 @@ handler.post(async (req, res) => {
       {
         $set: {
           name: req.body.name,
+          chronoid: req.body.chronoid,
           modifiedBy: user,
           modifiedAt: new Date(),
         },

@@ -8,8 +8,8 @@ import {
 } from '@chakra-ui/react';
 import { MdDeleteForever, MdModeEdit } from 'react-icons/md';
 
-const EditIcon = () => <Icon as={MdModeEdit} color="gray.300" />;
-const DeleteIcon = () => <Icon as={MdDeleteForever} color="gray.300" />;
+const EditIcon = () => <Icon as={MdModeEdit} />;
+const DeleteIcon = () => <Icon as={MdDeleteForever} />;
 
 const ProductListItem = ({ item, onDelete }) => {
   return (

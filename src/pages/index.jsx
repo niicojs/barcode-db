@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/client';
-import { List, Box, Link, Alert, AlertIcon } from '@chakra-ui/react';
+import { List, Box, Link, Alert, AlertIcon, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 import validbarcode from 'barcode-validator';
 
@@ -47,7 +47,9 @@ const Home = () => {
 
   return (
     <Layout title="Rechercher un produit">
-      {loading ? null : (
+      {loading ? (
+        <Spinner thickness="4px" color="teal.500" size="xl" />
+      ) : (
         <>
           <Login loggedIn={!!session} />
           {!session ? null : (
